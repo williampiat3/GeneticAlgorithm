@@ -1,0 +1,5 @@
+#ignoring compiled, pickled and temporary files
+*.pyc
+*.pk
+*~
+

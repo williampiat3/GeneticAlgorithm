@@ -10,3 +10,10 @@ This is problematic because usually in optimization problems we can access to gr
 
 ## A bit of context
 The approaches for tackling black-box problem are numerous and genetic algorithm is a small part of them, [scikit learn](https://scikit-optimize.github.io/) provides a lot of optimizers already (with some of the most recent approaches) but I offer here (I hope) an easier introduction and interpretability of the inner workings of the optimization process
+
+## Architecture
+In the folder Algorithms you will find the different components of the genetic algorithm each one of them will be explained in detail. Each run of the genetic algorithm produces a pickle file that contains all the information concerning the executions made by the algorithms and the outputs. This fiel can be used to produce visualization
+
+In the folder Vizualizations you will find some exploitations: here the script take as input the pickle file produced by the algorithm and produce the visualizations, i will try to give credit to all the  blogs that brought me ideas on the visualizations.
+
+I built my genetic algorithms on top of [deap](https://deap.readthedocs.io/en/master/) which is a highly customizable solution for genetic algorithm and genetic programming. I learned a lot on python thanks to them. I truly advice checking out their package
