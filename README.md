@@ -1,4 +1,8 @@
 # Genetic Algorithms
+
+Warning this folder is currently in devellopment
+
+
 The goal of this folder is to present different genetic algorithms that I develloped in order to tackle optimization problems in my different jobs. It includes the evolutionnary algorithms that I created but also the different visualizations that I coded/adapted in order to give some insight on how the algorithms operates.
 Of course the visualization don't work for all the algorithms (that can operate on continuous or discrete spaces) and I will try to explain which one are the best fitted for each case.
 This is more an experimental folder where I suggest an approach and would like to exchange about the relevance of some of my technical choices, I am open to suggestions :) .

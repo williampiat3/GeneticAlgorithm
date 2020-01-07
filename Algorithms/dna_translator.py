@@ -8,7 +8,7 @@ def dec_to_bin(integer):
 	return bin(integer)[2:]
 
 
-
+# Function from stackOverflow for making gray code
 def gray_code(n):
 	def gray_code_recurse (g,n):
 		k=len(g)
@@ -105,29 +105,41 @@ class DNA_creator():
 				results[caracter][str(indiv[caracter])]+=1
 		return results
 
-# Continous DNA class that handles the continous part of the dna
+
 class Continous_DNA():
+	"""
+	Continous DNA class that handles continuous intervalls:
+	Attributes:
+		hparams (dictionnary): parameter space with the following format:
+			{"param1":{"range":[0,9],"scale":"linear"},
+			"param2":{"range":[0.1,100],"scale":"log"}}
+			all keys are the differents parameters that will be handled by the translator a
+			the values are dictionnaries that specify the interval and the scale "linear" or "log"
+		stric_intervall (Bool): specifies if the individual has to stay in the range specified (True) or not (False)
+	"""
 	def __init__(self,hparams,stric_interval=False):
+
 		self.length=len(hparams)
 		self.hparams=hparams
 		self.keys=list(self.hparams.keys())
 		self.stric_interval=stric_interval
 
-	# Funtion that interpolate a param value of the hypercube to the real range 
+	# Function that interpolate a param value of the hypercube to the real range 
 	def interpolate_param(self,param,value):
+		min_value,max_value = self.hparams[param]["range"]
 		if self.hparams[param]["scale"] == "linear":
-
-			return value*(self.hparams[param]["range"][1]-self.hparams[param]["range"][0])+ self.hparams[param]["range"][0]
+			return value*(max_value - min_value)+ min_value
 		if self.hparams[param]["scale"] == "log":
-			return (math.exp(value*math.log1p(self.hparams[param]["range"][1]-self.hparams[param]["range"][0]))+self.hparams[param]["range"][0]-1)
+			return (math.exp(value*math.log1p(max_value - min_value))+min_value-1)
 
-
+	# Reverse action of the interpolate_param function: from the real range to the hypercube
 	def interpolate_reverse_param(self,param,value):
+		min_value,max_value = self.hparams[param]["range"]
 		if self.hparams[param]["scale"] == "linear":
-			return (value-self.hparams[param]["range"][0])/(self.hparams[param]["range"][1]-self.hparams[param]["range"][0])
+			return (value-min_value)/(max_value - min_value)
 
 		if self.hparams[param]["scale"] == "log":
-			return (math.log1p(value-self.hparams[param]["range"][0])/math.log1p(self.hparams[param]["range"][1]-self.hparams[param]["range"][0]))
+			return (math.log1p(value-min_value)/math.log1p(max_value - min_value))
 
 	# Function that creates a random individual in the hypercube
 	def generate_random(self):
