@@ -1,5 +1,5 @@
 
-from dna_translator import DNA_creator,HybridDNA
+from Utils.dna_translator import DNA_creator,HybridDNA
 from deap import creator, base, tools, algorithms
 import itertools
 import multiprocessing
@@ -7,8 +7,8 @@ import time
 import pickle
 import json
 import random
-from utils import generate,evalOneMax,evalOneMaxMulti,decorator_cross,decorator_mut,decorator_selection,recover_last_gen,evaluate,hybrid_cx,hybrid_mut
-from custom_fitnesses import ConstrainedFitness
+from Utils.utils import generate,evalOneMax,evalOneMaxMulti,decorator_cross,decorator_mut,decorator_selection,recover_last_gen,evaluate,hybrid_cx,hybrid_mut
+from Utils.custom_fitnesses import ConstrainedFitness
 
 
 

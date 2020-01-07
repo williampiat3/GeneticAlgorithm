@@ -1,4 +1,4 @@
-from dna_translator import DNA_creator
+from Utils.dna_translator import DNA_creator
 from deap import creator, base, tools, algorithms
 import itertools
 import multiprocessing
@@ -6,7 +6,7 @@ import time
 import pickle
 import json
 import random
-from utils import generate,evalOneMax,decorator_cross,decorator_mut,decorator_selection,recover_last_gen
+from Utils.utils import generate,evalOneMax,decorator_cross,decorator_mut,decorator_selection,recover_last_gen
 
 #Function that runs the evolutionnary algorithm (model is a function that takes a phenotype as an argument and a number of tests to make)
 
