@@ -11,15 +11,11 @@ from Utils.custom_fitnesses import FitnessReg
 
 
 
-"""
-Few changes need to be made here contrary to the previous programm
-the model function need to return a tuple of all the fitnesses, they need to be positive
-weights is the different weight that you want to give to the different fitnesses of the model
-
-
-"""
-
 def run_evolution_multicriteria(model,weights,hparams,NGEN=40,mut_rate=0.05,tourn_size=3,nb_indiv=80,nb_threads=1,cxpb=0.7, mutpb=0.4,log_file=None,recover_file=None,gray_code=False,**kwargs):
+	"""
+	Similar function than the one presented in simple_discrete ga but it has a different fitness that can compare summed weighted values
+	allows for a better exploration of the Pareto front between two objectives (one weight can't be set to 0)
+	"""
 	if recover_file:
 		with open(recover_file,'rb') as pickle_file:
 			hparams=pickle.load(pickle_file)

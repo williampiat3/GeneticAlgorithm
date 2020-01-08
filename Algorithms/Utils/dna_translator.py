@@ -30,9 +30,19 @@ def gray_code(n):
 
 
 class DNA_creator():
-	#we are creating here the structure of the genotype
-	#Gray code argument encodes in gray the genotype: better for neighbor mutation
+	"""
+	Class that can handle the interface between discrete spaces and genotype
+	Attributes:
+		hparams (python dictionnary): parameter space with the following format:
+		{"param1":[1,2,3],
+		"param2":["relu","sig"]}
+		the list being the differents values that need to be tested
+		gray_code (bool): if True Gray coding is used for the genotype, otherwise binary encoding is used
+	"""
 	def __init__(self,hparams,gray_code=False):
+		"""
+		Constructor that creates some utils attributes
+		"""
 		self.keys=list(hparams.keys())
 		self.lengths={}
 		self.hparams=hparams
@@ -43,17 +53,23 @@ class DNA_creator():
 	def generate_random(self):
 		dna=""
 		for key in self.keys:
+			#taking a random index in the list of possible choices
 			number=random.randint(0,self.lengths[key]-1)
+			#encoding in gray
 			if self.gray_code:
 				binary=gray_code((self.lengths[key]-1).bit_length())[number]
+			#or in binary
 			else:
 				binary=str(dec_to_bin(number))
 				binary='0'*((self.lengths[key]-1).bit_length()-len(binary))+binary
+			# append to the dna
 			dna+=binary
+		#need to cast as a list of ints
 		diction=[]
 		for k in dna:
 			diction.append(int(k))
 		return diction
+
 	#function that translates the genotype to phenotype
 	def dna_to_phen(self,dna):
 		phen={}
@@ -95,20 +111,11 @@ class DNA_creator():
 		except (IndexError,TypeError):
 			return False
 
-	def repartition_pop(self,pop):
-		results=dict(zip(self.keys,[{} for i in range(len(self.keys))]))
-		for key in self.keys:
-			for gene in self.hparams[key]:
-				results[key][str(gene)]=0
-		for indiv in pop:
-			for caracter in indiv:
-				results[caracter][str(indiv[caracter])]+=1
-		return results
 
 
 class Continous_DNA():
 	"""
-	Continous DNA class that handles continuous intervalls:
+	Continous DNA class that handles continuous intervals:
 	Attributes:
 		hparams (dictionnary): parameter space with the following format:
 			{"param1":{"range":[0,9],"scale":"linear"},
@@ -169,6 +176,13 @@ class Continous_DNA():
 #Hybrid DNA class that takes the two previously created class for dna handling
 #the genotype is a tuple of a discrete and continuous genotype
 class HybridDNA():
+	"""
+	Class that handles both continuous and discrete it is basically concatenanting the two classes previously made and the DNA is as well a concatenation
+	Attributes:
+		discrete_translator (DNA_Creator instance): handles the discrete part of the DNA
+		continuous_translator (Continuous_DNA instance): handle the continuous part of the DNA
+
+	"""
 	def __init__(self,hparams,stric_interval=False,gray_code=True):
 		self.discrete_translator=DNA_creator(hparams["discrete"],gray_code=gray_code)
 		self.continuous_translator=Continous_DNA(hparams["continuous"],stric_interval=stric_interval)

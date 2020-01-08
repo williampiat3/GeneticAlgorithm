@@ -18,7 +18,7 @@ def creation_deap_classes(creator,weights):
 	creator.create("FitnessMax", FitnessReg, weights=weights)
 	 
 	#creating the individual with extra arguments (parents, mutated, id and age for logs)
-	#these parameters are changed by the decorators of the operators to trace which operator was applied to who
+	#these parameters are changed by the decorators of the operators to trace which operator was applied to whom
 	creator.create("Individual", list, fitness=creator.FitnessMax,parents=None,mutated=None,id=None,age=0)
 
 def creation_tools(toolbox,model,translator,creator,weights,alpha,mu,sigma,indpb,tournsize,nb_threads,**kwargs):
@@ -35,6 +35,7 @@ def creation_tools(toolbox,model,translator,creator,weights,alpha,mu,sigma,indpb
 		sigma (Float): variance of the mutation
 		indpb (float between 0 and 1): probability of mutating one gene
 		tournsize (Integer): size of the tournament  for selection
+		nb_threads (Integer): number of process to run in parallel
 		**kwargs: extra arguments for the model
 	"""
 	# generation operation: relies on the function generate_random of the translator

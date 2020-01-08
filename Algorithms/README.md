@@ -15,7 +15,11 @@ For  evaluating the models I needed to code specific Fitness objects that are av
 ## Algorithms
 
 ### Simple Discrete GA
-Canonical and first approach (to my knowledge) to a genetic algorithm: discretizing intervals and making optimization on a discrete grid on a single objective
+Canonical and first approach (to my knowledge) to a genetic algorithm: discretizing intervals and making optimization on a discrete grid on a single objective.
+Is is not able to find the global extremum on continuous intervals however it is much more efficient than a grid search approach as it will focus on the most interesting zones of the design space:any lethal argument will be eliminated on the first generation while this is not the cas ein a grid search approach
+
+An example is provided in the ```__main__``` function on a simple linear function.
+
 
 ### Multicriteria GA
 Adding a multicreteria fitness to allow giving more weight to one fitness comapred to the other, allows to explore solutions that try to find a compromise between two (or more) metrics
