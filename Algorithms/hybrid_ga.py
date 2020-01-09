@@ -10,6 +10,61 @@ from Utils.utils import generate,decorator_cross,decorator_mut,decorator_selecti
 from Utils.custom_fitnesses import FitnessReg
 
 
+def creation_deap_classes(creator,weights):
+	"""
+	Function creating basic fitness and individual classes
+	"""
+	#weight is the weights given to the different fitnesses (incase you have a multiobjective optimization to make)
+	#the Fitness that we are using is not the lexicographic one, wa are summing the wvalues
+	creator.create("FitnessMax", FitnessReg, weights=weights)
+	 
+	#creating the individual with extra arguments (parents, mutated, id and age for logs)
+	#these parameters are changed by the decorators of the operators to trace which operator was applied to whom
+	creator.create("Individual", list, fitness=creator.FitnessMax,parents=None,mutated=None,id=None,age=0)
+
+def creation_tools(toolbox,model,translator,creator,weights,discrete_cx,discrete_cx_kwargs,continuous_cx,continuous_cx_kwargs,discrete_mut,discrete_mut_kwargs,continuous_mut,continuous_mut_kwargs,selection_op,selection_kwargs,nb_threads,**kwargs):
+	"""
+	Function creating operators for the continous ga
+	Warning the deap creator has to be instanciated with the class Individual created (call function creation deap classes first)
+	Parameters:
+		model (python callable) evaluation function 
+		translator (Continuous_DNA instance): translator for interfacing genotype and phenotype
+		creator (Deap creator): creator with classes Individual ans FitnessMax
+		weights (tuple): weights of the metrics of the python callable
+		discrete_cx (python callable): discrete cross over operation
+		discrete_cx_kwargs (python dictionnary): kwargs for the dicrete cross over
+		continuous_cx (python callable): continuous cross over
+		continuous_cx_kwargs (python dictionnary): kwargs for the continuous cross over
+		discrete_mut (python callable): discrete mutation operator
+		discrete_mut_kwargs (python dictionnary): kwargs for discrete mutation
+		continuous_mut (python callable): continuous mutation operator
+		continuous_mut_kwargs (python dictionnary): kwargs for continuous mutation
+		selection_op (python callable): selection operator
+		selection_kwargs (python dictionnary): kwargs for the selection
+		nb_threads (Integer): number of process to run in parallel
+		**kwargs: extra arguments for the model
+	"""
+	# generation operation: relies on the function generate_random of the translator
+	toolbox.register("individual", generate,translator=translator,creator=creator)
+	# a population is a repetition of individuals
+	toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+	#funtion that retruns the fitness from an individual
+	toolbox.register("evaluate", evaluate,model=model,translator=translator,weights=weights,**kwargs)
+	#mate function decorated for logs, mixing continuous and discrete operators
+	toolbox.register("mate",decorator_cross( hybrid_cx),discrete_cx=discrete_cx ,discrete_cx_kwargs=discrete_cx_kwargs,continuous_cx=continuous_cx,continuous_cx_kwargs=continuous_cx_kwargs)
+	#mutation function decorated for logging on which individual the mutation was done
+	toolbox.register("mutate", decorator_mut(hybrid_mut), discrete_mut=discrete_mut ,discrete_mut_kwargs=discrete_mut_kwargs,continuous_mut=continuous_mut,continuous_mut_kwargs=continuous_mut_kwargs)
+	#selection operator decorated for changing logs
+	toolbox.register("select",decorator_selection(selection_op), **selection_kwargs)
+
+
+			
+			
+
+	#Multiprocessing if the user specified multiple threads
+	if nb_threads > 1:
+		pool = multiprocessing.Pool(processes=nb_threads)
+		toolbox.register("map",pool.map)
 
 
 # Main function that will run the ga, same parameters, you can change here the 2 basic operators of the hybrid cross over and the hybrid mutation check deap tools on github for the kwargs of the operators
@@ -23,24 +78,13 @@ def run_hybrid_ga(model,weights,hparams,NGEN=40,nb_indiv=80,nb_threads=1,cxpb=0.
 			translator=HybridDNA(hparams,stric_interval=stric_interval,gray_code=gray_code)
 			pops=pickle.load(pickle_file)
 			
-			creator.create("FitnessMax", FitnessReg, weights=weights)
-			#weight is the weights given to the different fitnesses (incase you have a multiobjective optimization to make)
-			creator.create("Individual", list, fitness=creator.FitnessMax,parents=None,mutated=None,id=None,age=0)
+			#Creation of class FitnessMax and individual
+			creation_deap_classes(creator,weights)
 			#toolbox object from deap: allows to define functions in one line for operations on the individual
 			toolbox = base.Toolbox()
-			toolbox.register("individual", generate,translator=translator,creator=creator)
-			toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-			#funtion that retruns the fitness from an individual
-			#the output is a tuple to match the format of the weights given just above in fitnessMax definition
-
-
-			#deap basic funtion to cross a population 
-			toolbox.register("evaluate", evaluate,model=model,translator=translator,weights=weights,**kwargs)
-			toolbox.register("mate",decorator_cross( hybrid_cx),discrete_cx=discrete_cx ,discrete_cx_kwargs=discrete_cx_kwargs,continuous_cx=continuous_cx,continuous_cx_kwargs=continuous_cx_kwargs)
-			toolbox.register("mutate", decorator_mut(hybrid_mut), discrete_mut=discrete_mut ,discrete_mut_kwargs=discrete_mut_kwargs,continuous_mut=continuous_mut,continuous_mut_kwargs=continuous_mut_kwargs)
-			toolbox.register("select",decorator_selection(selection_op), **selection_kwargs)
+			#creation of operators
+			creation_tools(toolbox,model,translator,creator,weights,discrete_cx,discrete_cx_kwargs,continuous_cx,continuous_cx_kwargs,discrete_mut,discrete_mut_kwargs,continuous_mut,continuous_mut_kwargs,selection_op,selection_kwargs,nb_threads,**kwargs)
 			population=recover_last_gen(pops,creator,translator)
-			#nb_indiv=len(population)
 
 			#Performing selection and cross and mutation to create the new generation
 
@@ -48,22 +92,12 @@ def run_hybrid_ga(model,weights,hparams,NGEN=40,nb_indiv=80,nb_threads=1,cxpb=0.
 			population = algorithms.varAnd(population, toolbox, cxpb=cxpb, mutpb=mutpb)
 	else:
 		translator=HybridDNA(hparams,stric_interval=stric_interval,gray_code=gray_code)
-		creator.create("FitnessMax", FitnessReg, weights=weights)
-		#weight is the weights given to the different fitnesses (incase you have a multiobjective optimization to make)
-		creator.create("Individual", list, fitness=creator.FitnessMax)
+		#Creation of class FitnessMax and individual
+		creation_deap_classes(creator,weights)
 		#toolbox object from deap: allows to define functions in one line for operations on the individual
 		toolbox = base.Toolbox()
-		toolbox.register("individual", generate,translator=translator,creator=creator)
-		toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-		#funtion that retruns the fitness from an individual
-		#the output is a tuple to match the format of the weights given just above in fitnessMax definition
-
-
-		#deap basic funtion to cross a population 
-		toolbox.register("evaluate", evaluate,model=model,translator=translator,weights=weights,**kwargs)
-		toolbox.register("mate", decorator_cross(hybrid_cx),discrete_cx=discrete_cx ,discrete_cx_kwargs=discrete_cx_kwargs,continuous_cx=continuous_cx,continuous_cx_kwargs=continuous_cx_kwargs)
-		toolbox.register("mutate", decorator_mut(hybrid_mut), discrete_mut=discrete_mut ,discrete_mut_kwargs=discrete_mut_kwargs,continuous_mut=continuous_mut,continuous_mut_kwargs=continuous_mut_kwargs)
-		toolbox.register("select", decorator_selection(selection_op), **selection_kwargs)
+		#creation of operators
+		creation_tools(toolbox,model,translator,creator,weights,discrete_cx,discrete_cx_kwargs,continuous_cx,continuous_cx_kwargs,discrete_mut,discrete_mut_kwargs,continuous_mut,continuous_mut_kwargs,selection_op,selection_kwargs,nb_threads,**kwargs)
 		#we are now creating the population 
 		population = toolbox.population(n=nb_indiv)
 		
@@ -71,9 +105,6 @@ def run_hybrid_ga(model,weights,hparams,NGEN=40,nb_indiv=80,nb_threads=1,cxpb=0.
 	
 	init_integer=len(pops)
 
-	if nb_threads > 1:
-		pool = multiprocessing.Pool(processes=nb_threads)
-		toolbox.register("map",pool.map)
 	 #We are running the genetical algorithm
 	for gen in range(init_integer,NGEN):
 		print('Generation: '+str(gen+1))

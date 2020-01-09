@@ -29,7 +29,6 @@ def creation_tools(toolbox,model,translator,creator,mutpb,tourn_size,nb_threads,
 		translator (Continuous_DNA instance): translator for interfacing genotype and phenotype
 		creator (Deap creator): creator with classes Individual ans FitnessMax
 		weights (tuple): weights of the metrics of the python callable
-		alpha (Float): cross over parameter for allowing childs to step out of the parents' interval
 		mutpb (float between 0 and 1): probability of mutating one gene
 		tourn_size (Integer): size of the tournament  for selection
 		nb_threads (Integer): number of process to run in parallel

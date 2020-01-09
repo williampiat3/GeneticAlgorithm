@@ -20,9 +20,13 @@ Is is not able to find the global extremum on continuous intervals however it is
 
 An example is provided in the ```__main__``` function on a simple linear function.
 
+This genetic algorithm is useful however the fact that it has only one fitness is problematic: sometimes we are performing grid search to look for different combinations but it is interesting to introduce some parcimonious constraints. Indeed sometimes answering an optimization problem can lead to overfitting therefore it would be interesting to add a "simplicity metric" that would enforce the genetic algorithm to find the best and yet simple solution. This is why I implemented a genetic algorithm that can deal with multiple metrics (see multicriteria GA)
+
 
 ### Multicriteria GA
-Adding a multicreteria fitness to allow giving more weight to one fitness comapred to the other, allows to explore solutions that try to find a compromise between two (or more) metrics
+Adding a multicreteria fitness to allow giving more weight to one fitness comapred to the other, allows to explore solutions that try to find a compromise between two (or more) metrics. I develloped this script in order to make automated hyperparameter tuning in statistical models. I had two metrics of performance: the first one was the accuracy of the model and the second one was the complexity of the model (for a neural network, complexity can be mesured by the number of synaptic weights) and therefore I ran the genetic algorithm (with the right weights for the fitnesses) for it to find the optimal neural network in terms of accuracy and simplicity (I'll present this work in another github repo)
+
+As usual there is a simple example at the end of the script in the ```__main__``` function on a linear function
 
 ### Continous GA
 This algorithm does optimization of a continuous space, therefore the corss over and the mutation cannot be the same than on discrete spaces: the mutation is gaussian (it perturbs randomly with some noise) and the cross operation operates on each gene: the value of the child is taken uniformly in the interval of the values of the parent.
@@ -33,21 +37,23 @@ An example is provided in the ```__main__``` function on a simple quadratic func
 
 ### Hybrid GA
 
-Mixing the Continuous and Discrete approach to allow solving problems with both continuous and discrete parameters
+Mixing the Continuous and Discrete approach to allow solving problems with both continuous and discrete parameters, allows discrete parameters along with different scales of continuous parameters.
 
+This algorithm is straight forward if you are familiar with the continuous approach and the discrete approach presented presented above.
 
 
 ## Experiments
+
 ### Constrained GA
 Implementation of an approach to deal with contraints on genetic algorithms without penalizing the fitness ([paper](https://arxiv.org/abs/1610.00976))
 This required to create a new fitness object to count the constraints and to reconfigure the comparison operators
-It gave really interesting results
+It gave really interesting results especially when the solution respects all the constraints and tries to explore the different 
 
-### Hybrib with variable mutation
-Implementation of a mutation rate that is coded in the genotype of the individual, allows different behaviors in the same population
+### Hybrid with variable mutation
+Implementation of a mutation rate that is coded in the genotype of the individual, allows different behaviors in the same population. When the algorithm converges we observe a decreasing of the mutation rate in the population. It could be used to detect if the algorithm is stuck in a local minimum
 
 ### Genetic Feature Selection
-Feature selection using genetic algorithms
+Feature selection using genetic algorithms, it has proven quite useful to test different combinations of inputs 
 
 
 
