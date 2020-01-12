@@ -1,23 +1,26 @@
-#/******************************************************************************
-# * Original Author: Team UQ/ML                                                *
-# *                                                                            *
-# * Creation Date  : May 2019                                                  *
-# * Version        : 1.0                                                       *
-# *----------------------------------------------------------------------------*
-# * Description:                                                               *
-# * This programm use a genetical approach for feature selection               *
-# *----------------------------------------------------------------------------*
-# * Comment: Fully handcrafted                                                 *
-# *                                                                            *
-# ******************************************************************************/
 import pickle
 import random
 import numpy as np
 from deap import creator, base, tools, algorithms
-from GA.evolution import decorator_cross,decorator_mut,decorator_selection
+from Utils.utils import decorator_cross,decorator_mut,decorator_selection
 
-#function to generate a random individual
+#In this program the genetic algorithm selects different indexes and forward the list of indexes to the model
+#the black box must then exploit this list of indexes and return a performance metric:
+#for instance: training a model on the selected indexes and returning the Q square
+
+
 def generate_individual(creator,min_index=0,max_index=12,length=3):
+	"""
+	Function to generate a random individual
+	An individual is a a set of integers with a variable length
+	Arguments:
+		creator (deap creator instance): used for creating an instance of individual
+		min_index (Integer): min index that can be found in the list
+		max_index (Integer): max index that can be found in the list
+		length (Integer): Length of the generated individuals
+	Outputs:
+		indiv (deap Individual)
+	"""
 	indiv=creator.Individual(np.random.choice(list(range(min_index,max_index)),size=length,replace=False).tolist())
 	indiv.parents=None
 	indiv.mutated=None
@@ -25,22 +28,47 @@ def generate_individual(creator,min_index=0,max_index=12,length=3):
 	indiv.age=0
 	return indiv
 
-#function to cross too individuals
-# the function here takes all the genes selected in the two individuals and samples from it
-# it is done twice so that we generate 2 new individuals out of the 2 previous
+
 def cross_over(indiv1,indiv2):
-	# the cross over of two individuals here is composed 
+	"""
+	Function to cross too individuals
+	the function here takes all the genes selected in the two individuals and samples from it
+	it is done twice so that we generate 2 new individuals out of the 2 previous.
+	The child is composed of indexes from its parents with a length taken randomly in the length of the parents
+	Arguments:
+		indiv1,indiv2 (deap individuals): parents selected
+	Outputs:
+		tuple of 2 indiv (deap Individual)
+	"""
+	
 	smallest = min(len(indiv1),len(indiv2))
 	largest = max(len(indiv1),len(indiv2))
-	return tuple([creator.Individual(np.random.choice(list(set(indiv1+indiv2)),size=random.randint(smallest,largest),replace=False)) for _ in range(2)])
+	#creting the children
+	child1,child2 =[creator.Individual(np.random.choice(list(set(indiv1+indiv2)),size=random.randint(smallest,largest),replace=False)) for _ in range(2)]
+	#for the tags to work we need the children to be tagged just like the parents
+	child1.id=indiv1.id
+	child2.id=indiv2.id
+	return (child1,child2)
 
-#function to mutate an individual
-#this function is adding randomly (with probability add_mutpb) an index that is not present in the initial genotype
-#it removes randomly (with probability rm_mutpb) a gene or multiple genes in the individual
+
 def mutation(indiv,min_index=0,max_index=12,rm_mutpb=0.3,add_mutpb=0.3):
-	#we add randomly a column in the genotype
+	"""
+	Function to mutate an individual
+	this function is adding randomly (with probability add_mutpb) an index that is not present in the initial genotype
+	it removes randomly (with probability rm_mutpb) a gene or multiple genes in the individual
+	Arguments:
+		indiv (Deap individual): individual to mutate
+		min_index (Integer): min index that can be found in the list
+		max_index (Integer): max index that can be found in the list
+		rm_mutpb (Float between 0 and 1): probability for geometric law to remove n genes
+		add_mutpb (Float between 0 and 1): probability for geometric law to add n genes
+	Outputs:
+		tuple of one indiv (deap Individual)
+	"""
+
 
 	try:
+		#we add randomly genes
 		while random.random()<add_mutpb:
 			#Create the list of the available genes
 			list_available_gene = [i for i in range(min_index,max_index) if i not in indiv]
@@ -52,48 +80,52 @@ def mutation(indiv,min_index=0,max_index=12,rm_mutpb=0.3,add_mutpb=0.3):
 		return indiv,
 	except ValueError:
 		return indiv,
-#function to make sure that the individual will be smaller than a max length
-#it is removing random index until the individual has reached the desired size
+
 def trimmering(indiv,length_max=15):
+	"""
+	Function to make sure that the individual will be smaller than a max length
+	it is removing random index until the individual has reached the desired size
+	Arguments:
+		indiv (Deap individual): individual to trimmer
+		length_max (Integer): maximum length of an individual
+
+	"""
 	while len(indiv)>length_max:
 		indiv.pop(random.randint(0,len(indiv)-1))
 	return indiv,
 
-	pop=generate_random_population(number_of_individuals, size_genotype)
+
 #function for evaluating the individual using kwargs
 def evaluate(indiv,model,**kwargs):
 	return model(indiv,**kwargs),
 
-# test function for assesing the ga
-def model(indiv):
-	return sum(indiv)
-
-
-def recover_last_gen(pops,creator):
-
-	last_gen = pops[-1]
-	last_pop = []
-	#for each last entry in the log file we create an Individual with the right parameters
-	for ind in last_gen:
-		indiv = creator.Individual(ind["phen"])
-		indiv.id = ind["id"]
-		indiv.parents = ind["parents"]
-		indiv.mutated = ind["mutated"]
-		indiv.age = ind["age"]
-		indiv.fitness.values = ind["fits"]
-		last_pop.append(indiv)
-	return last_pop
-
-
-
-#the function that will find the best features
-def run_genetic_selection(model,nb_indiv,nb_gen,min_index,max_index,rm_mutpb=0.5,add_mutpb=0.5,length_max=20,tourn_size=3,length_init=5,cxpb=0.5,mutpb=0.2,log_file=None,recover_file=None,**kwargs):
-	creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+def create_deap_classes(creator,weights):
+	"""
+	Function creating basic fitness and individual classes
+	"""
 	#weight is the weights given to the different fitnesses (incase you have a multiobjective optimization to make)
+	creator.create("FitnessMax", base.Fitness, weights=weights)
+	#creating individual class with attributes
 	creator.create("Individual", list, fitness=creator.FitnessMax,parents=None,mutated=None,id=None,age=0)
 
-	#toolbox object from deap: allows to define functions in one line for operations on the individual
-	toolbox = base.Toolbox()
+
+def create_tools(toolbox,model,creator,min_index,max_index,length_init,rm_mutpb,add_mutpb,tourn_size,length_max,**kwargs):
+	"""
+	Function creating operators
+	Arguments:
+		toolbox (deap toolbox instance): base.toolbox
+		model (python callable) evaluation function 
+		creator (Deap creator): creator with classes Individual ans FitnessMax
+		min_index (Integer): min index that can be found in the list
+		max_index (Integer): max index that can be found in the list
+		length_init (Integer): Length of the generated individuals
+		rm_mutpb (Float between 0 and 1): probability for geometric law to remove n genes
+		add_mutpb (Float between 0 and 1): probability for geometric law to add n genes
+		tourn_size (Integer): size of the tournament
+		length_max (Integer): maximum length of an individual
+
+
+	"""
 	toolbox.register("individual", generate_individual,creator=creator,min_index=min_index,max_index=max_index,length=length_init)
 	toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
@@ -106,16 +138,24 @@ def run_genetic_selection(model,nb_indiv,nb_gen,min_index,max_index,rm_mutpb=0.5
 	toolbox.register("mutate", decorator_mut(mutation),min_index=min_index,max_index=max_index,rm_mutpb=rm_mutpb,add_mutpb=add_mutpb)
 	toolbox.register("select", decorator_selection(tools.selTournament), tournsize=tourn_size)
 	toolbox.register("trimmering",trimmering,length_max=length_max)
-	if recover_file:
-		with open(recover_file,'rb') as pk_file:
-			pops=pickle.load(pk_file)
-		population=recover_last_gen(pops,creator)
-		start=len(pops)
-	else:
-		#we are now creating the population 
-		population = toolbox.population(n=nb_indiv)
-		pops=[]
-		start=0
+
+
+
+#the function that will find the best features
+def run_genetic_selection(model,weights,nb_indiv,nb_gen,min_index,max_index,rm_mutpb=0.5,add_mutpb=0.5,length_max=20,tourn_size=3,length_init=5,cxpb=0.5,mutpb=0.2,log_file=None,**kwargs):
+	
+	#Creating classes for the genetic algorithm
+	create_deap_classes(creator,weights)
+	
+
+	#toolbox object from deap: allows to define functions in one line for operations on the individual
+	toolbox = base.Toolbox()
+	create_tools(toolbox,model,creator,min_index,max_index,length_init,rm_mutpb,add_mutpb,tourn_size,length_max,**kwargs)
+
+	#we are now creating the population 
+	population = toolbox.population(n=nb_indiv)
+	pops=[]
+	start=0
 		
 
 
@@ -149,7 +189,7 @@ def run_genetic_selection(model,nb_indiv,nb_gen,min_index,max_index,rm_mutpb=0.5
 
 
 		#Selection of the individuals
-		population = toolbox.select([indiv for indiv in population ], k=len(population))
+		population = toolbox.select(population, k=len(population))
 
 		population = algorithms.varAnd(population, toolbox, cxpb=cxpb, mutpb=mutpb)
 		for l,ind in enumerate(population):
@@ -161,7 +201,11 @@ def run_genetic_selection(model,nb_indiv,nb_gen,min_index,max_index,rm_mutpb=0.5
 				pickle.dump(pops,pickle_file,protocol=pickle.HIGHEST_PROTOCOL )
 	return pops
 
+# test function for assesing the ga
+# if the Ga works it should select only the highest indexes
+def model(indiv):
+	return sum(indiv)
 
 
 if __name__ == '__main__':
-	run_genetic_selection(model,nb_indiv=100,nb_gen=40,min_index=0,max_index=12,rm_mutpb=0.3,add_mutpb=0.3,length_max=6,tourn_size=3,cxpb=0.5,mutpb=0.5,log_file=None)
+	run_genetic_selection(model,(1,),nb_indiv=100,nb_gen=40,min_index=0,max_index=12,rm_mutpb=0.3,add_mutpb=0.3,length_max=6,tourn_size=3,cxpb=0.5,mutpb=0.5,log_file=None)

@@ -47,13 +47,31 @@ This algorithm is straight forward if you are familiar with the continuous appro
 ### Constrained GA
 Implementation of an approach to deal with contraints on genetic algorithms without penalizing the fitness ([paper](https://arxiv.org/abs/1610.00976))
 This required to create a new fitness object to count the constraints and to reconfigure the comparison operators
-It gave really interesting results especially when the solution respects all the constraints and tries to explore the different 
+It gave really interesting results especially when the solution respects all the constraints and the GA tries to explore the different boundaries.
+I show here the evolution of the percentage of constraints met thoughout the generations on a problem that had 52 constraints.
+In this problem the goal was to optimize a set of coefficients to reduce an error but the solution had to respect a high number of constraints
+<p align="center">
+	<img src="../Images/constraints.png">
+</p>
+Here we plot the evolution of the error averaged over the population
+<p align="center">
+	<img src="../Images/figure_bf_average_error.png">
+</p>
+The visualizations were created with the tools in the folder "Visualizations"
 
 ### Hybrid with variable mutation
 Implementation of a mutation rate that is coded in the genotype of the individual, allows different behaviors in the same population. When the algorithm converges we observe a decreasing of the mutation rate in the population. It could be used to detect if the algorithm is stuck in a local minimum
+here I plot the evolution of the mutation rate in the population: it is very interresting to see the individuals that don't mutate enough and the one that mutate to much are not selected but that at the end of the evolution when the algorithm has found the global extremum the mutation rate drops as the individuals are craving to be stable in this extremum
+<p align="center">
+	<img src="../Images/mutpb_evolution.png">
+</p>
 
 ### Genetic Feature Selection
-Feature selection using genetic algorithms, it has proven quite useful to test different combinations of inputs 
+Feature selection using genetic algorithms, it has proven quite useful to test different combinations of inputs. I used it in my former company to select features for au Gaussian process: we had 82 different features and we were trying to select the ones that were the most relevant therefore I ranthis algorithm and plot the occurences of an index in the population at every generation
+<p align="center">
+	<img src="../Images/feature_selection.png">
+</p>
+
 
 
 
