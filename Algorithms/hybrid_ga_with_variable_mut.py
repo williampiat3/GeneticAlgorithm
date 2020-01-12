@@ -190,4 +190,4 @@ if __name__ == '__main__':
 
 		   }
 		   }
-	pops = run_hybrid_ga_indiv_mut(test_func,(1.,),hparams,NGEN=30,nb_indiv=100,cxpb=0.6,log_file="results_test.pk", stric_interval=True)
+	pops = run_hybrid_ga_indiv_mut(test_func,(1.,),hparams,NGEN=20,nb_indiv=100,cxpb=0.6,log_file="results_test.pk", stric_interval=True)
