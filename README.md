@@ -1,6 +1,6 @@
 # Genetic Algorithms
 <p align="center">
-	<img src="../Images/main_page.png">
+	<img src="./Images/main_page.png">
 </p>
 
 Warning this folder is currently in devellopment
