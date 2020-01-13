@@ -2,6 +2,9 @@
 <p align="center">
 	<img src="./Images/main_page.png">
 </p>
+<p align="center">
+	<img src="./Images/plot_generations.png">
+</p>
 
 Warning this folder is currently in devellopment
 

@@ -35,6 +35,8 @@ def repartition_caracter_in_pop(hparams,pop,contractor=np.mean):
 	#looping in the population to extract the caracteristics
 	for indiv in pop:
 		for caracter in indiv["phen"]:
+			if caracter not in hparams:
+				continue
 			#incrementing the value for the gene
 			results[caracter][str(indiv["phen"][caracter])]+=1
 			#adding the fitnesses to be contracted
@@ -128,7 +130,10 @@ def best_individual(populations, fitness_index=0):
 
 if __name__=='__main__':
 	#pickle with hparams and pops
-	path='saved_results2.pk'
+	path='path_to_pickle_file.pk'
 	hparams,pops=load_pop(path)
-	plot_bar_color(hparams,pops,cm.hot,0,contractor=np.max,lamdba_=lambda x: x)
+	#which fitness to display
+	fit = 0
+	#if you run this script for the hybrid GA put hparams["discrete"] instead of hparams
+	plot_bar_color(hparams,pops,cm.hot,fit,contractor=np.mean,lamdba_=lambda x: x)
 

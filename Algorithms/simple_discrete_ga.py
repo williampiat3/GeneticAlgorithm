@@ -170,9 +170,9 @@ def test_func(hparam):
 
 if __name__ == '__main__':
 	hparams = {
-				"param1":[5,-3,-2,-1],
-				"param2":[2,5,7]
+				"param1":[0,0.1,0.2,0.3,0.4,0.5],
+				"param2":[0,0.1,0.2,0.3,0.4,0.5]
 
 		   }
 		   
-	pops = run_evolution(test_func,hparams,NGEN=30,nb_indiv=100,cxpb=0.6,log_file="results_test.pk")
+	pops = run_evolution(test_func,hparams,NGEN=30,nb_indiv=6,cxpb=0.6,log_file="results_test.pk")

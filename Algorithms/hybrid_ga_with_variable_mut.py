@@ -133,7 +133,6 @@ def run_hybrid_ga_indiv_mut(model,weights,hparams,NGEN=40,nb_indiv=80,nb_threads
 		pops=[]
 	
 	init_integer=len(pops)
-	print(translator.discrete_translator.hparams)
 
 	#We are running the genetical algorithm
 	for gen in range(init_integer,NGEN):
