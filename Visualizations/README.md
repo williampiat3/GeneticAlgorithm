@@ -48,6 +48,18 @@ The Board works for all kind of parameter that has a numerical value, although t
 We see that in this case this gene 0.5 gave the best advantage as it was selected in the last generations. The color of the bar represents the mean fitness of the individuals counted in the bar therefor the brighter the higher advatage the gene is giving in average.
 
 
+## A Constraint visualizer
+For the constraints, I needed a special visualization to display the evolution of the constraints along the generation. I built a class that you inherit from to add your own vizualization to your application.
+For now it has only two vizualizations: one for constraints one for the weighted sum of the fitnesses.
+<p align="center">
+	<img src="../Images/constraints.png">
+</p>
+Here we plot the evolution of the error averaged over the population
+<p align="center">
+	<img src="../Images/figure_bf_average_error.png">
+</p>
+
+
 
 
 
