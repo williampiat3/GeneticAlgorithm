@@ -6,7 +6,8 @@
 	<img src="./Images/plot_generations.png">
 </p>
 
-Warning this folder is currently in devellopment
+
+In Algorithms/unit_test.py you can find unit tests on the three main approaches the discrete appoach, the continuous approach and the hybrid approach, they are tested against the the [Griewank function](https://deap.readthedocs.io/en/master/api/benchmarks.html#deap.benchmarks.griewank) you can change the test function but remember that the algorithm are meant for maximization.
 
 
 The goal of this folder is to present different genetic algorithms that I develloped in order to tackle optimization problems in my different jobs. It includes the evolutionnary algorithms that I created but also the different visualizations that I coded/adapted in order to give some insight on how the algorithms operates.

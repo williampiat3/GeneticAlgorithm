@@ -2,4 +2,5 @@ deap
 numpy
 flask
 matplotlib
+seaborn
 

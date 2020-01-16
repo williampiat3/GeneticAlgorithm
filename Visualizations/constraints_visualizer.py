@@ -60,6 +60,11 @@ class Visualizer():
 		return aggregated_indivs
 
 	def __call__(self,**kwargs):
+		"""
+		Function to run all inner methods that starts with "draw_"
+		Arguments:
+			**kwargs: arguments that will be passed to all the "draw_" functions
+		"""
 		for attr in dir(self):
 			if "draw_" == attr[:5]:
 				plt.figure()
@@ -100,13 +105,14 @@ if __name__ == "__main__":
 	#Path of the
 	path_pickle= "/home/will/github/GeneticAlgorithm/Algorithms/results_constraints.pk"
 	viz = Visualizer(path_pickle,80,(1,))
+	#arguments for the draw function
 	arguments={
 	"titles":["const1","const2"],
 	"title_fitness":"Average weighted fitness"
 
 
 	}
-
+	#passing all the arguments
 	viz(**arguments)
 
 

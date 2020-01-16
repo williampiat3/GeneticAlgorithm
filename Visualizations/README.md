@@ -26,7 +26,7 @@ indiv = {"fits":fitness_tuple,
 }
 
 ```
-These information allow us to link an individual to the previous generation, who is linked to the previous one etc... We can therefore build the genealogic tree which is exactly what does the ```board.py``` script
+These information allow us to link an individual to the previous generation, who is linked to the previous one etc... We can therefore build the genealogic tree which is exactly what does the ```board.py``` script.
 
 ## The Board
 <p align="center">
@@ -45,7 +45,7 @@ The Board works for all kind of parameter that has a numerical value, although t
 <p align="center">
 	<img src="../Images/plot_generations.png">
 </p>
-We see that in this case this gene 0.5 gave the best advantage as it was selected in the last generations. The color of the bar represents the mean fitness of the individuals counted in the bar therefor the brighter the higher advatage the gene is giving in average.
+We see that in this case this gene 0.5 gave the best advantage as it was selected in the last generations. The color of the bar represents the mean fitness of the individuals counted in the bar therefor the brighter the higher advatage the gene is giving in average. This visualization was made earlier than the two others the code is less user-friendly: it is hard to tune to find the right set of values for the evolution of the fitness to be plotted in a elegant manner. I advise using it when your fitness is scaled between 0 and 1 (or to perform a preprocessing of the fitnesses for them to be evenly distributed between 0 and 1) only at this moment you'll enjoy the whole colormap. 
 
 
 ## A Constraint visualizer

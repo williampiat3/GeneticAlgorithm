@@ -211,18 +211,21 @@ class HybridDNA():
 
 
 if __name__=='__main__':
+	import numpy as np
 	hparams={
-				"character1":[1,2,3],
-				"character2":["relu","sig"]
-	}
+		"x0":np.linspace(-1,1,20),
+		"x1":np.linspace(-1,1,20),
+		"x2":np.linspace(-1,1,20)
 
-	translator=DNA_creator(hparams,gray_code=True)
+
+		}
+
+	translator=DNA_creator(hparams,gray_code=False)
 
 	indiv = translator.generate_random()
 	print(indiv)
 	phen = translator.dna_to_phen(indiv)
 	print(phen)
-	print(translator.is_dna_viable([1,0,1]))
 	# pops=[[translator.generate_random() for i in range(10)] for j in range(3)]
 	# results=[translator.repartition_pop(pop) for pop in pops]
 	# for carac in hparams:

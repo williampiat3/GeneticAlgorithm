@@ -1,4 +1,5 @@
 import itertools
+import numpy as np
 
 
 def get_all_combinations(feed_dict):
@@ -22,7 +23,7 @@ def generate(translator,creator):
 #the output is a tuple to match the format of the weights given just above in fitnessMax definition
 def evalOneMax(individual,model,translator,**kwargs):
 	if (translator.is_dna_viable(individual)==False):
-		return 0,
+		return -np.inf,
 	else:
 		phen=translator.dna_to_phen(individual)
 		accuracy=model(phen,**kwargs)
@@ -79,7 +80,7 @@ def recover_last_gen(pops,creator,translator):
 
 def evalOneMaxMulti(individual,model,translator,weights,**kwargs):
 	if (translator.is_dna_viable(individual)==False):
-		return tuple(map(lambda x: -1*abs(x)/x,weights))
+		return tuple(map(lambda x: -np.inf*abs(x)/x,weights))
 	
 	else:
 		phen=translator.dna_to_phen(individual)
@@ -91,7 +92,7 @@ def evalOneMaxMulti(individual,model,translator,weights,**kwargs):
 # Assessment operator 
 def evaluate(indiv,model,translator,weights,**kwargs):
 	if (translator.is_dna_viable(indiv)==False):
-		return tuple(map(lambda x: -1*abs(x)/x,weights))
+		return tuple(map(lambda x: -np.inf*abs(x)/x,weights))
 	else:
 		hparam = translator.dna_to_phen(indiv)
 		results = model(hparam,**kwargs)
