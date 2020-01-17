@@ -113,7 +113,7 @@ class DNA_creator():
 
 
 
-class Continous_DNA():
+class Continuous_DNA():
 	"""
 	Continous DNA class that handles continuous intervals:
 	Attributes:
@@ -185,7 +185,7 @@ class HybridDNA():
 	"""
 	def __init__(self,hparams,stric_interval=False,gray_code=True):
 		self.discrete_translator=DNA_creator(hparams["discrete"],gray_code=gray_code)
-		self.continuous_translator=Continous_DNA(hparams["continuous"],stric_interval=stric_interval)
+		self.continuous_translator=Continuous_DNA(hparams["continuous"],stric_interval=stric_interval)
 		self.hparams=hparams
 
 	def generate_random(self):

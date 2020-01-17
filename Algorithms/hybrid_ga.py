@@ -1,4 +1,4 @@
-from Utils.dna_translator import HybridDNA
+from .Utils import HybridDNA
 from deap import creator, base, tools, algorithms
 import itertools
 import multiprocessing
@@ -6,8 +6,8 @@ import time
 import pickle
 import json
 import random
-from Utils.utils import generate,decorator_cross,decorator_mut,decorator_selection,recover_last_gen,evaluate,hybrid_cx,hybrid_mut
-from Utils.custom_fitnesses import FitnessReg
+from .Utils import generate,decorator_cross,decorator_mut,decorator_selection,recover_last_gen,evaluate,hybrid_cx,hybrid_mut
+from .Utils import FitnessReg
 
 
 def creation_deap_classes(creator,weights):

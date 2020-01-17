@@ -2,9 +2,9 @@ import unittest
 from deap.benchmarks import griewank
 from deap import tools
 import numpy as np
-from simple_discrete_ga import run_evolution
-from continuous_ga import continuous_ga
-from hybrid_ga import run_hybrid_ga
+from Algorithms import run_evolution
+from Algorithms import continuous_ga
+from Algorithms import run_hybrid_ga
 
 """
 This file aims at building unit tests for the algorithms develloped in the Algorithm folder with benchmark function

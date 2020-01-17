@@ -1,4 +1,4 @@
-from Utils.dna_translator import DNA_creator
+from .Utils import DNA_creator
 from deap import creator, base, tools, algorithms
 import itertools
 import multiprocessing
@@ -6,7 +6,7 @@ import time
 import pickle
 import json
 import random
-from Utils.utils import generate,evalOneMax,decorator_cross,decorator_mut,decorator_selection,recover_last_gen
+from .Utils import generate,evalOneMax,decorator_cross,decorator_mut,decorator_selection,recover_last_gen
 
 
 

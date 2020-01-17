@@ -109,6 +109,7 @@ class ConstrainedFitness(FitnessReg):
 
 
 	def __le__(self, other):
+		
 		if sum(self.constraints) < sum(other.constraints):
 			return True
 		if sum(self.constraints) == sum(other.constraints):
@@ -116,6 +117,7 @@ class ConstrainedFitness(FitnessReg):
 		return False
 
 	def __lt__(self, other):
+
 		if sum(self.constraints) < sum(other.constraints):
 			return True
 		if sum(self.constraints) == sum(other.constraints):

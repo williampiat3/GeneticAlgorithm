@@ -1,4 +1,4 @@
-from Utils.dna_translator import Continous_DNA
+from .Utils import Continuous_DNA
 from deap import creator, base, tools, algorithms
 import itertools
 import multiprocessing
@@ -6,8 +6,8 @@ import time
 import pickle
 import json
 import random
-from Utils.utils import generate,decorator_cross,decorator_mut,decorator_selection,recover_last_gen,evaluate
-from Utils.custom_fitnesses import FitnessReg
+from .Utils import generate,decorator_cross,decorator_mut,decorator_selection,recover_last_gen,evaluate
+from .Utils import FitnessReg
 
 def creation_deap_classes(creator,weights):
 	"""
@@ -88,7 +88,7 @@ def continuous_ga(model,weights,hparams,NGEN=40,nb_indiv=80,nb_threads=1,cxpb=0.
 	if recover_file:
 		with open(recover_file,'rb') as pickle_file:
 			hparams=pickle.load(pickle_file)
-			translator=Continous_DNA(hparams,stric_interval=stric_interval)
+			translator=Continuous_DNA(hparams,stric_interval=stric_interval)
 			pops=pickle.load(pickle_file)
 			
 			#creating Individual and Fitness class
@@ -108,7 +108,7 @@ def continuous_ga(model,weights,hparams,NGEN=40,nb_indiv=80,nb_threads=1,cxpb=0.
 			population = algorithms.varAnd(population, toolbox, cxpb=cxpb, mutpb=mutpb)
 	#otherwise initialize from
 	else:
-		translator=Continous_DNA(hparams,stric_interval=stric_interval)
+		translator=Continuous_DNA(hparams,stric_interval=stric_interval)
 		#creating Individual and Fitness class
 		creation_deap_classes(creator,weights)
 

@@ -2,7 +2,7 @@ import pickle
 import random
 import numpy as np
 from deap import creator, base, tools, algorithms
-from Utils.utils import decorator_cross,decorator_mut,decorator_selection
+from .Utils import decorator_cross,decorator_mut,decorator_selection
 
 #In this program the genetic algorithm selects different indexes and forward the list of indexes to the model
 #the black box must then exploit this list of indexes and return a performance metric:
