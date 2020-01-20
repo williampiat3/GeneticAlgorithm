@@ -5,6 +5,7 @@ import numpy as np
 from Algorithms import run_evolution
 from Algorithms import continuous_ga
 from Algorithms import run_hybrid_ga
+from Algorithms import run_genetic_selection
 
 """
 This file aims at building unit tests for the algorithms develloped in the Algorithm folder with benchmark function
@@ -25,7 +26,7 @@ class TestGeneticAlgorithms(unittest.TestCase):
 		#minima for comparing the distance to the minima
 		self.minima = {"x0":0,"x1":0,"x2":0}
 		#distance to consider we have found the objective
-		self.epsilon = 1
+		self.epsilon = 0.3
 
 	def is_a_success(self,indiv):
 		"""
@@ -96,6 +97,18 @@ class TestGeneticAlgorithms(unittest.TestCase):
 		best = sorted(pops[-1], key= lambda indiv: indiv["fits"],reverse=True)[0]
 		#asserting if minima found
 		self.assertTrue(self.is_a_success(best))
+
+	def test_feature_selection(self):
+		"""
+		This test is not really a feature selection but the test function evolves with the indexes given by the ga
+		so it will naturally converge toward the maximum of the model function which is having all maximum indexes
+		"""
+		# test function for assesing the ga
+		# if the Ga works it should select only the highest indexes
+		def model(indiv):
+			return sum(indiv)
+		#we limit the length so that only the 6 best are to be selected
+		run_genetic_selection(model,(1,),nb_indiv=100,nb_gen=40,min_index=0,max_index=12,rm_mutpb=0.3,add_mutpb=0.3,length_max=6,tourn_size=3,cxpb=0.5,mutpb=0.5,log_file=None)
 
 
 

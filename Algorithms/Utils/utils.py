@@ -3,6 +3,9 @@ import numpy as np
 
 
 def get_all_combinations(feed_dict):
+	"""
+	Depreciated util function for discrete parameter space
+	"""
 	output=[]
 	keys=feed_dict.keys()
 	iterables=list(map(lambda x: feed_dict[x],keys))

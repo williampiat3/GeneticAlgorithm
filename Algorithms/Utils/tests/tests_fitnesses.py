@@ -11,7 +11,7 @@ class TestFitnesses(unittest.TestCase):
 	"""
 
 	def __init_(self):
-		super(TestUtils,self).__init__()
+		super(TestFitnesses,self).__init__()
 
 	def test_fitnesses(self):
 		"""

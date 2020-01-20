@@ -12,6 +12,8 @@ For coding the genetical algorithm I needed some classes for making the interact
 
 For  evaluating the models I needed to code specific Fitness objects that are available in the custom_fitnesses.py file
 
+These three files have unit tests coded in the folder Utils/tests to make sure that they have the correct behavior: of course is can giv you some insights and some example of the inner working of the algorithms (but all the code is here so why having just insights when you can have the whole code!)
+
 ## Algorithms
 
 ### Simple Discrete GA
